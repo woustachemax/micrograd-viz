@@ -154,16 +154,16 @@ footer a:hover{text-decoration:underline}
   <p class="eyebrow">andrej karpathy</p>
   <h1>micro<br>grad</h1>
   <div style="width:2rem;height:1px;background:var(--border);margin:2rem 0"></div>
-  <p>A scalar-valued autograd engine in ~100 lines of Python. Every neural network, however vast, reduces to this — repeated simple operations, each one remembering how to undo itself.</p>
+  <p>A scalar-valued autograd engine in ~100 lines of Python. Every neural network, however vast, reduces to this: repeated simple operations, each one remembering how to undo itself.</p>
   <div style="margin-top:3rem">
     <a href="#graph" style="text-decoration:none"><button class="primary">explore ↓</button></a>
   </div>
 </section>
 
 <section id="graph">
-  <p class="eyebrow">01 — the idea</p>
+  <p class="eyebrow">01 / the idea</p>
   <h2>Every operation builds a graph.</h2>
-  <p>Writing <span class="mono">L = (a + b) × c</span> quietly constructs a directed acyclic graph. Each node records its value and — crucially — <em>how to reverse its contribution</em> to the loss. The backward pass is just reading those notes in reverse order.</p>
+  <p>Writing <span class="mono">L = (a + b) × c</span> quietly constructs a directed acyclic graph. Each node records its value and, crucially, <em>how to reverse its contribution</em> to the loss. The backward pass is just reading those notes in reverse order.</p>
   <div class="formula">∂L/∂a = ∂L/∂d · ∂d/∂a &nbsp;&nbsp;←&nbsp;&nbsp; chain rule</div>
   <div class="btns">
     <button onclick="cgForward()">→ forward pass</button>
@@ -182,9 +182,9 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section id="neuron">
-  <p class="eyebrow">02 — the unit</p>
+  <p class="eyebrow">02 / the unit</p>
   <h2>A neuron is a dot product.</h2>
-  <p>Inputs multiplied by learned weights, summed with a bias, squashed through an activation. The magic is that every number here is a <span class="mono">Value</span> — differentiable by construction.</p>
+  <p>Inputs multiplied by learned weights, summed with a bias, squashed through an activation. The magic is that every number here is a <span class="mono">Value</span>, differentiable by construction.</p>
   <div class="formula">out = ReLU(w₁x₁ + w₂x₂ + b)</div>
   <div class="btns">
     <button onclick="nForward()">→ activate</button>
@@ -197,7 +197,7 @@ footer a:hover{text-decoration:underline}
   </div>
 </section>
 <section id="mlp">
-  <p class="eyebrow">03 — the network</p>
+  <p class="eyebrow">03 / the network</p>
   <h2>Stack neurons into layers.</h2>
   <p>Each layer transforms its inputs into a new representation. Edge thickness encodes weight magnitude; color encodes sign. Watch the signal flow forward and the gradients flow back.</p>
   <div class="btns">
@@ -212,7 +212,7 @@ footer a:hover{text-decoration:underline}
 </section>
 
 <section id="train">
-  <p class="eyebrow">04 — the loop</p>
+  <p class="eyebrow">04 / the loop</p>
   <h2>Descend the gradient.</h2>
   <p>Forward pass → compute loss → backward pass → nudge every parameter by its gradient, scaled by a learning rate. Repeat. Watch the boundary emerge.</p>
   <div class="formula">θ ← θ − α · ∂L/∂θ</div>
@@ -230,8 +230,8 @@ footer a:hover{text-decoration:underline}
     </div>
     <div class="stats">
       <div class="stat"><div class="label">step</div><div class="val" id="sv">0</div></div>
-      <div class="stat"><div class="label">loss</div><div class="val" id="lv">—</div></div>
-      <div class="stat"><div class="label">accuracy</div><div class="val" id="av">—</div></div>
+      <div class="stat"><div class="label">loss</div><div class="val" id="lv">--</div></div>
+      <div class="stat"><div class="label">accuracy</div><div class="val" id="av">--</div></div>
     </div>
   </div>
 </section>
@@ -429,7 +429,7 @@ function renderCG(){
 
     // data value
     const dv = mk('text',{x:x+7,y:y+27,fill:hasF?(isLeaf?'#5dd47c':'#58c4dd'):'#333','font-size':'11','font-family':'SF Mono,monospace','font-weight':'500'});
-    dv.textContent = hasF ? fmt(node.data) : '—';
+    dv.textContent = hasF ? fmt(node.data) : '--';
     g.appendChild(dv);
 
     // grad value
@@ -459,8 +459,8 @@ function renderCG(){
   // hint
   const hint = document.getElementById('cg-hint');
   if(phase===0) hint.textContent='click "forward pass" to begin'; hint.className='hint';
-  if(phase===1){ hint.textContent='forward pass complete — values shown in blue'; hint.className='hint ok'; }
-  if(phase===2){ hint.textContent='backward pass complete — gradients shown in gold'; hint.className='hint ok'; }
+  if(phase===1){ hint.textContent='forward pass complete, values shown in blue'; hint.className='hint ok'; }
+  if(phase===2){ hint.textContent='backward pass complete, gradients shown in gold'; hint.className='hint ok'; }
 }
 
 function cgForward(){ cg=buildCG(); cgPhase=1; renderCG() }
@@ -560,7 +560,7 @@ function renderNeuron(){
     lt.textContent=label; g.appendChild(lt);
 
     const vt = mk('text',{x:0,y:6,'text-anchor':'middle',fill:color,'font-size':'10.5','font-family':'SF Mono,monospace','font-weight':'500'});
-    vt.textContent = (hasF && val!==null && val!==undefined) ? fmt(val,3) : '—';
+    vt.textContent = (hasF && val!==null && val!==undefined) ? fmt(val,3) : '--';
     g.appendChild(vt);
 
     if(hasB && node && node.grad!==0){
@@ -582,7 +582,7 @@ function renderNeuron(){
   const hint = document.getElementById('n-hint');
   if(nPhase===0) hint.textContent='hover weights and nodes to inspect values'; hint.className='hint';
   if(nPhase===1){ hint.textContent=`output = ${fmt(nOut?.data,4)} (after ReLU)`; hint.className='hint ok'; }
-  if(nPhase===2){ hint.textContent=`gradients propagated — ∇w₁=${fmt(nNet.w[0].grad,4)}, ∇w₂=${fmt(nNet.w[1].grad,4)}`; hint.className='hint ok'; }
+  if(nPhase===2){ hint.textContent=`gradients propagated: ∇w₁=${fmt(nNet.w[0].grad,4)}, ∇w₂=${fmt(nNet.w[1].grad,4)}`; hint.className='hint ok'; }
 }
 
 function nForward(){
@@ -682,8 +682,8 @@ function renderMLP(){
 
   const hint = document.getElementById('mlp-hint');
   if(mlpPhase===0){hint.textContent='architecture: 2 → 4 → 4 → 1'; hint.className='hint';}
-  if(mlpPhase===1){hint.textContent='forward pass done — edge color = weight sign, thickness = weight magnitude'; hint.className='hint ok';}
-  if(mlpPhase===2){hint.textContent='backward pass done — gold rings = high gradient magnitude neurons'; hint.className='hint ok';}
+  if(mlpPhase===1){hint.textContent='forward pass done: edge color = weight sign, thickness = weight magnitude'; hint.className='hint ok';}
+  if(mlpPhase===2){hint.textContent='backward pass done: gold rings = high gradient magnitude neurons'; hint.className='hint ok';}
 }
 
 function mlpForward(){
@@ -839,9 +839,9 @@ function resetTrain(){
   document.getElementById('train-btn').textContent='▶ start training';
   document.getElementById('train-btn').className='primary';
   document.getElementById('sv').textContent='0';
-  document.getElementById('lv').textContent='—';
+  document.getElementById('lv').textContent='--';
   document.getElementById('lv').style.color='';
-  document.getElementById('av').textContent='—';
+  document.getElementById('av').textContent='--';
   const lc=document.getElementById('loss-cv'); lc.getContext('2d').fillStyle='#0e0e0e'; lc.getContext('2d').fillRect(0,0,lc.width,lc.height);
   drawBoundary();
 }

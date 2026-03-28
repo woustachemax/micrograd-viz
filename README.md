@@ -1,68 +1,14 @@
 
 # micrograd
 
-![awww](puppy.jpg)
+This repo adds an interactive browser-based visualizer on top of Andrej Karpathy's micrograd engine. For everything about how the neural network and autograd engine are implemented, see [karpathy/micrograd](https://github.com/karpathy/micrograd). What lives in `viz/index.html` is a single self-contained HTML file (no build step, no dependencies) that ports the full `Value`, `Neuron`, `Layer`, and `MLP` classes to JavaScript and teaches you how they work through four interactive sections:
 
-A tiny Autograd engine (with a bite! :)). Implements backpropagation (reverse-mode autodiff) over a dynamically built DAG and a small neural networks library on top of it with a PyTorch-like API. Both are tiny, with about 100 and 50 lines of code respectively. The DAG only operates over scalar values, so e.g. we chop up each neuron into all of its individual tiny adds and multiplies. However, this is enough to build up entire deep neural nets doing binary classification, as the demo notebook shows. Potentially useful for educational purposes.
+- **Computation graph**: builds `L = (a + b) x c` as a directed acyclic graph rendered in SVG, with a forward pass that lights up node values in blue and a backward pass that propagates gradients in gold, hover any node to inspect its exact `data` and `grad`
+- **Single neuron**: SVG circuit of `ReLU(w1*x1 + w2*x2 + b)` where you can activate the neuron and then backprop through it, with weight gradients shown on the edges and a small ReLU curve drawn inline
+- **MLP architecture**: SVG of a `2 -> 4 -> 4 -> 1` network where edge thickness encodes weight magnitude, edge color encodes sign (teal for positive, red for negative), and gold rings appear on neurons with high average gradient after the backward pass
+- **Training loop**: watches a `2 -> 8 -> 8 -> 1` network learn to separate two concentric rings using SVM hinge loss and SGD, with a live canvas loss curve, a canvas decision boundary that updates every step, and running accuracy and loss stats
 
-### Installation
-
-```bash
-pip install micrograd
-```
-
-### Example usage
-
-Below is a slightly contrived example showing a number of possible supported operations:
-
-```python
-from micrograd.engine import Value
-
-a = Value(-4.0)
-b = Value(2.0)
-c = a + b
-d = a * b + b**3
-c += c + 1
-c += 1 + c + (-a)
-d += d * 2 + (b + a).relu()
-d += 3 * d + (b - a).relu()
-e = c - d
-f = e**2
-g = f / 2.0
-g += 10.0 / f
-print(f'{g.data:.4f}') # prints 24.7041, the outcome of this forward pass
-g.backward()
-print(f'{a.grad:.4f}') # prints 138.8338, i.e. the numerical value of dg/da
-print(f'{b.grad:.4f}') # prints 645.5773, i.e. the numerical value of dg/db
-```
-
-### Training a neural net
-
-The notebook `demo.ipynb` provides a full demo of training an 2-layer neural network (MLP) binary classifier. This is achieved by initializing a neural net from `micrograd.nn` module, implementing a simple svm "max-margin" binary classification loss and using SGD for optimization. As shown in the notebook, using a 2-layer neural net with two 16-node hidden layers we achieve the following decision boundary on the moon dataset:
-
-![2d neuron](moon_mlp.png)
-
-### Tracing / visualization
-
-For added convenience, the notebook `trace_graph.ipynb` produces graphviz visualizations. E.g. this one below is of a simple 2D neuron, arrived at by calling `draw_dot` on the code below, and it shows both the data (left number in each node) and the gradient (right number in each node).
-
-```python
-from micrograd import nn
-n = nn.Neuron(2)
-x = [Value(1.0), Value(-2.0)]
-y = n(x)
-dot = draw_dot(y)
-```
-
-![2d neuron](gout.svg)
-
-### Running tests
-
-To run the unit tests you will have to install [PyTorch](https://pytorch.org/), which the tests use as a reference for verifying the correctness of the calculated gradients. Then simply:
-
-```bash
-python -m pytest
-```
+To open it, run `python3 -m http.server 8080` from the `viz/` directory and go to `http://localhost:8080`.
 
 ### License
 
