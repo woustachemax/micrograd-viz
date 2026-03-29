@@ -9,7 +9,3 @@ This repo adds an interactive browser-based visualizer on top of Andrej Karpathy
 - **Training loop**: watches a `2 -> 8 -> 8 -> 1` network learn to separate two concentric rings using SVM hinge loss and SGD, with a live canvas loss curve, a canvas decision boundary that updates every step, and running accuracy and loss stats
 
 To open it, run `python3 -m http.server 8080` from the `viz/` directory and go to `http://localhost:8080`.
-
-### License
-
-MIT
