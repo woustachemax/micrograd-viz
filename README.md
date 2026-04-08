@@ -1,5 +1,5 @@
 
-# micrograd
+# micrograd-viz
 
 This repo adds an interactive browser-based visualizer on top of Andrej Karpathy's micrograd engine. For everything about how the neural network and autograd engine are implemented, see [karpathy/micrograd](https://github.com/karpathy/micrograd). What lives in `viz/index.html` is a single self-contained HTML file (no build step, no dependencies) that ports the full `Value`, `Neuron`, `Layer`, and `MLP` classes to JavaScript and teaches you how they work through four interactive sections:
 
